@@ -21,11 +21,49 @@ npm install
 
 2. Start dev server
 ```bash
+# Student Performance Analytics & Reporting System
+
+Frontend application (React + Vite) for managing student performance analytics and reports.
+
+Overview
+- Simple frontend scaffold with role-based views for teachers and students.
+- Demo data lives in `src/data/*.js`; API calls are placeholders in `src/services/api.js`.
+
+Prerequisites
+- Node 16+ and npm (or yarn)
+
+Quick start
+1. Install dependencies
+```bash
+npm install
+```
+
+2. Run the development server
+```bash
 npm run dev
 ```
 
-Open http://localhost:5173 (or the address Vite prints).
+3. Build for production
+```bash
+npm run build
+npm run preview
+```
 
-Notes:
-- This is frontend-only with dummy data in `src/data/students.js`.
-- Replace service calls in `src/services/api.js` with real Axios calls to your backend.
+Project structure (important files)
+- `src/` — React source files
+- `src/components/` — UI components
+- `src/pages/` — Route pages for teacher and student flows
+- `src/services/api.js` — replace with real backend endpoints
+- `src/data/` — sample/dummy data used by the UI
+
+Notes
+- This repository contains frontend-only code and uses local/dummy data by default.
+- To connect a backend: update `src/services/api.js` to point to your API, and add any required environment variables.
+
+Contributing
+- Open issues or PRs for fixes, features, or documentation updates.
+
+License
+- (Add your license here) — or request me to add an `MIT` license file.
+
+If you want, I can also add a GitHub Actions workflow to run build and lint on PRs.

@@ -4,7 +4,7 @@ services:
     name: spars-backend
     env: docker
     dockerContext: ./backend
-    dockerfile: ./backend/Dockerfile
+    dockerfilePath: ./backend/Dockerfile
     plan: free
     envVars:
       - key: DATABASE_URL

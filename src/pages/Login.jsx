@@ -4,14 +4,39 @@ import { AuthContext } from '../context/AuthContext'
 
 export default function Login(){
   const { login } = useContext(AuthContext)
-  const [role, setRole] = useState('teacher')
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
   const navigate = useNavigate()
 
-  function handleSubmit(e){
+  async function handleSubmit(e){
     e.preventDefault()
-    login(role)
-    if(role === 'teacher') navigate('/teacher/dashboard')
-    else navigate('/student/dashboard')
+    
+    try {
+      const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080';
+      const response = await fetch(`${BASE_URL}/api/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          username: email,
+          password: password
+        })
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        alert(errorData.error || 'Login failed');
+        return;
+      }
+      
+      const data = await response.json();
+      login(data.role); // Server now dictates the role
+      
+      if(data.role === 'teacher' || data.role === 'ROLE_ADMIN') navigate('/teacher/dashboard')
+      else navigate('/student/dashboard')
+      
+    } catch (error) {
+      alert("Error connecting to server. Make sure the Spring Boot backend is running.");
+    }
   }
 
   return (
@@ -24,20 +49,12 @@ export default function Login(){
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block text-sm font-semibold text-gray-700 mb-2">Email</label>
-            <input placeholder="Enter email" className="w-full border border-gray-200 px-4 py-2.5 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required />
+            <input placeholder="Enter email" value={email} onChange={e=>setEmail(e.target.value)} className="w-full border border-gray-200 px-4 py-2.5 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required />
           </div>
 
           <div>
             <label className="block text-sm font-semibold text-gray-700 mb-2">Password</label>
-            <input placeholder="Enter password" className="w-full border border-gray-200 px-4 py-2.5 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" type="password" required />
-          </div>
-
-          <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-2">Role</label>
-            <select value={role} onChange={e=>setRole(e.target.value)} className="w-full border border-gray-200 px-4 py-2.5 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-              <option value="teacher">Teacher</option>
-              <option value="student">Student</option>
-            </select>
+            <input placeholder="Enter password" value={password} onChange={e=>setPassword(e.target.value)} className="w-full border border-gray-200 px-4 py-2.5 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" type="password" required />
           </div>
 
           <button type="submit" className="w-full btn-primary py-3 font-semibold mt-6">Sign In</button>

@@ -16,14 +16,35 @@ export default function Register(){
     setFormData(prev => ({ ...prev, [name]: value }))
   }
 
-  function handleSubmit(e){
+  async function handleSubmit(e){
     e.preventDefault()
     if(formData.password !== formData.confirmPassword){
       alert('Passwords do not match')
       return
     }
-    localStorage.setItem('role', formData.role)
-    navigate('/login')
+    
+    try {
+      const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080';
+      const response = await fetch(`${BASE_URL}/api/auth/register`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          username: formData.email,
+          password: formData.password,
+          role: formData.role
+        })
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        alert(errorData.error || 'Registration failed');
+        return;
+      }
+      
+      navigate('/login')
+    } catch (error) {
+      alert("Error connecting to server. Make sure the Spring Boot backend is running.");
+    }
   }
 
   return (

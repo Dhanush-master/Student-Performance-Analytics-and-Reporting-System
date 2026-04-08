@@ -1,10 +1,17 @@
-import { students } from '../data/students'
+const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080';
 
-export function fetchStudents(){
-  return Promise.resolve(students)
+export async function fetchStudents() {
+  const response = await fetch(`${BASE_URL}/api/students`);
+  if (!response.ok) {
+    throw new Error('Network response was not ok');
+  }
+  return response.json();
 }
 
-export function fetchStudentById(id){
-  const s = students.find(x => x.id === Number(id))
-  return Promise.resolve(s)
+export async function fetchStudentById(id) {
+  const response = await fetch(`${BASE_URL}/api/students/${id}`);
+  if (!response.ok) {
+    throw new Error('Network response was not ok');
+  }
+  return response.json();
 }
